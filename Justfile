@@ -34,6 +34,10 @@ brew:
 diff:
     chezmoi diff
 
+# Apply chezmoi changes without previewing
+apply:
+    chezmoi apply
+
 # Verify playbook syntax
 check:
     ansible-playbook -i ansible/inventory.yml ansible/site.yml --syntax-check
