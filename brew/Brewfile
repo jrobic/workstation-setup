@@ -53,6 +53,7 @@ brew "stylua"
 brew "tmux"
 brew "tokei"
 brew "trivy"                    # drift: installed outside flake (security scanner)
+brew "uv"
 brew "upx"
 brew "yq"
 brew "zoxide"
