@@ -1,0 +1,6 @@
+# ~/.zshenv — read by EVERY zsh shell (interactive, login, AND non-interactive).
+# Claude Code hooks run in a non-interactive shell → they only read this file.
+# Make mise runtimes resolvable here (shims) so hooks with `#!/usr/bin/env bun`
+# find bun without `mise activate` (which lives in .zshrc / interactive only).
+# Keep this file MINIMAL (read very often): just a PATH export.
+export PATH="$HOME/.local/share/mise/shims:$PATH"
