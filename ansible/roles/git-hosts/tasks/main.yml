@@ -2,13 +2,17 @@
 # git-hosts role — per-machine SSH key + upload to GitHub and GitLab.
 # Single ed25519 key, pushed to both hosts (auth + signing).
 
-- name: Generate per-machine SSH key (if absent)
-  community.crypto.openssh_keypair:
+- name: Check for existing SSH key
+  ansible.builtin.stat:
     path: "{{ ssh_key_path }}"
-    type: ed25519
-    comment: "{{ ssh_key_title }}"
-  register: ssh_key
-  # Fallback without community.crypto: ssh-keygen -t ed25519 -f {{ ssh_key_path }} -N ''
+  register: ssh_key_stat
+
+- name: Generate per-machine SSH key (only if absent)
+  ansible.builtin.command: >
+    ssh-keygen -t ed25519 -f {{ ssh_key_path }} -N "" -C "{{ ssh_key_title }}"
+  when: not ssh_key_stat.stat.exists
+  # Only generates when missing — never reads/touches an existing (possibly
+  # passphrase-protected) key. Avoids openssh_keypair's "unable to read key" failure.
 
 # ── GitHub (gh) — OAuth device flow, no PAT ──
 - name: Check GitHub authentication

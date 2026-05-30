@@ -1,7 +1,5 @@
 ---
 # Ansible collections required by roles.
 collections:
-  - name: community.general   # homebrew, osx_defaults, etc.
+  - name: community.general   # homebrew, osx_defaults, mas, etc.
     version: ">=8.0.0"
-  - name: community.crypto    # openssh_keypair (per-machine SSH key)
-    version: ">=2.0.0"

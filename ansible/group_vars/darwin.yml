@@ -1,7 +1,7 @@
 ---
 # macOS variables.
 brewfile_global: "{{ playbook_dir }}/../brew/Brewfile"
-brewfile_host: "{{ playbook_dir }}/../brew/Brewfile.{{ ansible_hostname | default('') }}"
+brewfile_host: "{{ playbook_dir }}/../brew/Brewfile.{{ ansible_facts.hostname | default('') }}"
 
 # Runtimes installed globally by mise (default versions; per-project
 # managed via .mise.toml / .nvmrc in each repo).
