@@ -1,4 +1,7 @@
 # Chezmoi config generated at init. Data exposed to templates via {{ "{{ .var }}" }}.
+# Source lives in this repo (home/ subdir via .chezmoiroot) — set so no --source flag is needed.
+sourceDir = "{{ .chezmoi.homeDir }}/code/workstation-setup"
+
 [data]
     email = "hello@jonathanrobic.fr"
     github_user = "jrobic"

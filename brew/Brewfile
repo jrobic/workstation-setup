@@ -17,6 +17,7 @@ brew "awscli"
 brew "bat"
 brew "bottom"
 brew "btop"
+brew "chezmoi"                  # dotfiles manager
 brew "ctop"
 brew "diff-so-fancy"
 brew "dive"
