@@ -49,14 +49,14 @@
   community.general.osx_defaults:
     domain: NSGlobalDomain
     key: KeyRepeat
-    type: int
+    type: float        # stored as float (written by the Keyboard settings slider)
     value: 2
 
 - name: Initial repeat delay
   community.general.osx_defaults:
     domain: NSGlobalDomain
     key: InitialKeyRepeat
-    type: int
+    type: float        # stored as float (Keyboard settings slider)
     value: 30
 
 # ── Dock — applied on Dock restart (dock role, run after) ──
@@ -64,7 +64,7 @@
   community.general.osx_defaults:
     domain: com.apple.dock
     key: tilesize
-    type: int
+    type: float        # stored as float (Dock size slider)
     value: 40
 
 - name: Dock — don't rearrange Spaces
