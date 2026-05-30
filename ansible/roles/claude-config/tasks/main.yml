@@ -1,0 +1,21 @@
+---
+# claude-config role — Design B: clone the PRIVATE repo (jr-claude-code-setup) to
+# ~/code/claude, then symlink ~/.claude → it. chezmoi NEVER touches it.
+# Edit/commit/push = manual git afterward. Requires SSH key (git-hosts role).
+
+- name: Clone private Claude config repo → ~/code/claude
+  ansible.builtin.git:
+    repo: "{{ claude_config_repo }}"
+    dest: "{{ claude_config_dest }}"
+    version: main
+    update: false          # NEVER overwrite a locally edited working tree
+    accept_hostkey: true
+  # update:false → initial clone only. Updates are manual
+  # (git -C ~/code/claude pull), see `just update`.
+
+- name: Symlink ~/.claude → the cloned repo
+  ansible.builtin.file:
+    src: "{{ claude_config_dest }}"
+    dest: "{{ claude_config_link }}"
+    state: link
+    force: false           # never clobber an existing ~/.claude

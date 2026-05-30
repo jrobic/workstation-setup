@@ -1,0 +1,64 @@
+---
+# git-hosts role — per-machine SSH key + upload to GitHub and GitLab.
+# Single ed25519 key, pushed to both hosts (auth + signing).
+
+- name: Generate per-machine SSH key (if absent)
+  community.crypto.openssh_keypair:
+    path: "{{ ssh_key_path }}"
+    type: ed25519
+    comment: "{{ ssh_key_title }}"
+  register: ssh_key
+  # Fallback without community.crypto: ssh-keygen -t ed25519 -f {{ ssh_key_path }} -N ''
+
+# ── GitHub (gh) — OAuth device flow, no PAT ──
+- name: Check GitHub authentication
+  ansible.builtin.command: gh auth status
+  changed_when: false
+  failed_when: false
+  register: gh_auth
+
+- name: Prompt for GitHub login if needed (interactive)
+  ansible.builtin.pause:
+    prompt: |
+      GitHub not authenticated. In another terminal, run:
+          gh auth login
+      (choose SSH, device flow). Press Enter once done.
+  when: gh_auth.rc != 0
+
+- name: List GitHub SSH keys (idempotence)
+  ansible.builtin.command: gh ssh-key list
+  changed_when: false
+  register: gh_keys
+
+- name: Upload pubkey to GitHub
+  ansible.builtin.command: >
+    gh ssh-key add {{ ssh_key_path }}.pub --title "{{ ssh_key_title }}" --type authentication
+  when: ssh_key_title not in (gh_keys.stdout | default(''))
+
+# ── GitLab (glab) — PAT required (api + write_repository), from Dashlane ──
+- name: Check GitLab authentication
+  ansible.builtin.command: glab auth status
+  changed_when: false
+  failed_when: false
+  register: glab_auth
+
+- name: Authenticate glab via Dashlane PAT
+  ansible.builtin.shell: >
+    set -o pipefail;
+    dcli password "{{ dashlane_gitlab_pat_item }}" |
+    glab auth login --stdin --use-keyring
+  args:
+    executable: /bin/bash
+  when: glab_auth.rc != 0
+  # NB: confirm exact syntax `dcli password <item>` (raw password output).
+
+- name: List GitLab SSH keys (idempotence)
+  ansible.builtin.command: glab ssh-key list
+  changed_when: false
+  failed_when: false
+  register: glab_keys
+
+- name: Upload pubkey to GitLab
+  ansible.builtin.command: >
+    glab ssh-key add {{ ssh_key_path }}.pub --title "{{ ssh_key_title }}" --usage-type auth_and_signing
+  when: ssh_key_title not in (glab_keys.stdout | default(''))

@@ -1,0 +1,20 @@
+---
+# Global variables (all hosts).
+github_user: jrobic
+git_name: "Jonathan Robic"
+git_email: "hello@jonathanrobic.fr"
+
+# Repos
+workstation_repo: "https://github.com/jrobic/workstation-setup.git"
+# Private Claude config repo, cloned to ~/code/claude then symlinked as ~/.claude.
+claude_config_repo: "git@github.com:jrobic/jr-claude-code-setup.git"
+claude_config_dest: "{{ ansible_user_dir }}/code/claude"
+claude_config_link: "{{ ansible_user_dir }}/.claude"
+
+# Per-machine SSH key
+ssh_key_path: "{{ ansible_user_dir }}/.ssh/id_ed25519"
+ssh_key_title: "{{ ansible_hostname | default('workstation') }}"
+
+# Dashlane — workstation secrets use the `ws_` prefix (namespacing + `dcli password ws_` filtering).
+# Item name containing the GitLab PAT (scopes api + write_repository).
+dashlane_gitlab_pat_item: "ws_gitlab-pat"

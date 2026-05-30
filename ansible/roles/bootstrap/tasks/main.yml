@@ -1,0 +1,24 @@
+---
+# Bootstrap role — prerequisite tools before full brew bundle.
+# Homebrew + ansible + git are already laid down by bootstrap.sh; we ensure here
+# the binaries that the following roles need (gh, glab, mise, dcli).
+
+- name: Verify Homebrew presence
+  ansible.builtin.command: brew --version
+  changed_when: false
+  register: brew_check
+  failed_when: brew_check.rc != 0
+
+- name: Tap Dashlane (Dashlane CLI)
+  community.general.homebrew_tap:
+    name: dashlane/tap
+    state: present
+
+- name: Install prerequisite tools (gh, glab, mise, dashlane-cli)
+  community.general.homebrew:
+    name:
+      - gh
+      - glab
+      - mise
+      - dashlane-cli
+    state: present

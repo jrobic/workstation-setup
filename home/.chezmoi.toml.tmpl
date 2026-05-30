@@ -1,0 +1,7 @@
+# Chezmoi config generated at init. Data exposed to templates via {{ "{{ .var }}" }}.
+[data]
+    email = "hello@jonathanrobic.fr"
+    github_user = "jrobic"
+
+# Example of injecting a Dashlane secret into a template (ws_ prefix convention):
+#   token = {{ "{{ (index (dashlanePassword \"ws_github-token\") 0).password }}" }}

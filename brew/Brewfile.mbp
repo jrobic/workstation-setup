@@ -1,0 +1,7 @@
+# Brewfile.mbp — overlay specific to the "mbp" machine (work)
+# Loaded IN ADDITION to the global Brewfile by the brew role when host == mbp.
+# Populate when the mbp/mini distinction is finalized (open question in host_vars).
+#
+# Example:
+# cask "datagrip"      # if reserved for work machine
+# brew "awscli"        # if reserved for work machine

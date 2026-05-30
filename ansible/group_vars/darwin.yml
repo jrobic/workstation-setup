@@ -1,0 +1,20 @@
+---
+# macOS variables.
+brewfile_global: "{{ playbook_dir }}/../brew/Brewfile"
+brewfile_host: "{{ playbook_dir }}/../brew/Brewfile.{{ ansible_hostname | default('') }}"
+
+# Runtimes installed globally by mise (default versions; per-project
+# managed via .mise.toml / .nvmrc in each repo).
+mise_global_tools:
+  - { name: "node", version: "lts" }
+  - { name: "go", version: "latest" }
+  - { name: "python", version: "latest" }
+  - { name: "bun", version: "latest" }
+
+# Dock (dockutil) — persistent apps.
+dock_persistent_apps:
+  - "/Applications/Spark Desktop.app"
+  - "/Applications/Obsidian.app"
+  - "/Applications/Firefox Developer Edition.app"
+  - "/Applications/Visual Studio Code.app"
+  - "/Applications/DataGrip.app"

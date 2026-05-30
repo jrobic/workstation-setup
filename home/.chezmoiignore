@@ -1,0 +1,7 @@
+# Files present in source but NOT to be materialized in $HOME.
+README.md
+.DS_Store
+
+# Runtime / state never to be managed on the target side (reminder; especially relevant
+# if adding ~/.config/* in bulk via the allowlist).
+.zsh_history

@@ -1,0 +1,9 @@
+# lefthook — git hooks for this repo. https://lefthook.dev
+# Run `lefthook install` once to wire the hooks into .git/hooks.
+
+pre-commit:
+  parallel: true
+  commands:
+    gitleaks:
+      run: gitleaks git --staged --redact --no-banner
+      fail_text: "🔒 gitleaks detected a potential secret in staged changes — commit blocked."

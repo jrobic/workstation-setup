@@ -1,0 +1,10 @@
+---
+# mise role — node/go/python/bun runtimes.
+# Rust is intentionally EXCLUDED from mise (managed by rustup, see decision B2).
+# Dashlane CLI (dcli) is installed via brew in the bootstrap role, not here.
+
+- name: Install global runtimes via mise
+  ansible.builtin.command: "mise use --global {{ item.name }}@{{ item.version }}"
+  loop: "{{ mise_global_tools }}"
+  register: mise_use
+  changed_when: "'installing' in (mise_use.stderr | default(''))"

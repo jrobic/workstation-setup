@@ -1,0 +1,4 @@
+---
+# Linux variables — STUB.
+# Defined when pc-rtx / nas-vm arrive (choice of apt/pacman/dnf manager).
+linux_packages: []

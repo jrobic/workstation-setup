@@ -1,0 +1,8 @@
+---
+# linux-pkg role — STUB.
+# To implement when pc-rtx / nas-vm arrive: detect apt/pacman/dnf,
+# install Linux packages + systemd services. See "Linux stub" decision.
+
+- name: Linux — not implemented (stub)
+  ansible.builtin.debug:
+    msg: "linux-pkg role not implemented (macOS first). Linux hosts deferred."

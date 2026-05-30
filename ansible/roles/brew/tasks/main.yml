@@ -1,0 +1,18 @@
+---
+# brew role — installs all declared packages (global Brewfile + host overlay).
+
+- name: Apply global Brewfile
+  ansible.builtin.command: "brew bundle --file={{ brewfile_global }}"
+  register: brew_bundle
+  changed_when: "'Installing' in brew_bundle.stdout"
+
+- name: Check for host-specific overlay existence
+  ansible.builtin.stat:
+    path: "{{ brewfile_host }}"
+  register: brewfile_host_stat
+
+- name: Apply host overlay (Brewfile.<hostname>)
+  ansible.builtin.command: "brew bundle --file={{ brewfile_host }}"
+  when: brewfile_host_stat.stat.exists
+  register: brew_bundle_host
+  changed_when: "'Installing' in brew_bundle_host.stdout"

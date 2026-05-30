@@ -1,0 +1,4 @@
+---
+# Local machine variables.
+# Temporary: to be split into mbp.yml / mini.yml when the distinction is finalized
+# (open question in host_vars in the wiki).

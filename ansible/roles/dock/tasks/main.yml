@@ -1,0 +1,28 @@
+---
+# dock role — persistent Dock apps via dockutil.
+
+- name: Install dockutil
+  community.general.homebrew:
+    name: dockutil
+    state: present
+
+- name: List current Dock state (idempotence)
+  ansible.builtin.command: dockutil --list
+  changed_when: false
+  register: dock_list
+
+- name: Clear persistent apps if Dock doesn't match
+  ansible.builtin.command: dockutil --remove all --no-restart
+  when: dock_persistent_apps | difference(dock_list.stdout_lines | map('regex_replace', '\t.*', '') | list) | length > 0
+  changed_when: true
+
+- name: Add persistent apps in order
+  ansible.builtin.command: "dockutil --add '{{ item }}' --no-restart"
+  loop: "{{ dock_persistent_apps }}"
+  when: item | basename | regex_replace('\\.app$','') not in dock_list.stdout
+  changed_when: true
+
+- name: Restart Dock
+  ansible.builtin.command: killall Dock
+  changed_when: false
+  failed_when: false

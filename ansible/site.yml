@@ -1,0 +1,24 @@
+---
+# Main workstation playbook.
+# Role order = dependency chain (see wiki "bootstrap chain").
+
+- name: Workstation — macOS
+  hosts: darwin
+  gather_facts: true
+  roles:
+    - role: bootstrap        # brew + prerequisite tools (gh, glab, mise)
+    - role: mise             # node/go/python/bun runtimes + dcli (npm)
+    - role: git-hosts        # per-machine SSH key + gh/glab upload
+    - role: gpg              # per-machine GPG signing key + gh/glab upload
+    - role: brew             # full brew bundle (Brewfile)
+    - role: chezmoi          # public dotfiles (init --apply)
+    - role: claude-config    # clone private repo → ~/.claude (Design B)
+    - role: macos-defaults   # defaults write
+    - role: dock             # dockutil
+
+# Linux — STUB, activated when pc-rtx/nas-vm arrive.
+- name: Workstation — Linux
+  hosts: linux
+  gather_facts: true
+  roles:
+    - role: linux-pkg

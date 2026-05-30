@@ -1,0 +1,95 @@
+---
+# macos-defaults role — `defaults write` settings.
+# Values verified via `defaults read` on mbp on 2026-05-30.
+# (type=png removed: it's already macOS default.)
+
+- name: Create screenshots folder
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/Desktop/Screenshots"
+    state: directory
+    mode: "0755"
+
+- name: Screenshots location
+  community.general.osx_defaults:
+    domain: com.apple.screencapture
+    key: location
+    type: string
+    value: "{{ ansible_user_dir }}/Desktop/Screenshots"
+
+- name: Screenshots without shadow
+  community.general.osx_defaults:
+    domain: com.apple.screencapture
+    key: disable-shadow
+    type: bool
+    value: true
+
+- name: Show all file extensions
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: AppleShowAllExtensions
+    type: bool
+    value: true
+
+- name: Disable guest account
+  community.general.osx_defaults:
+    domain: com.apple.loginwindow
+    key: GuestEnabled
+    type: bool
+    value: false
+
+- name: Finder in column view
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: FXPreferredViewStyle
+    type: string
+    value: clmv
+
+# ── Keyboard — fast repeat (captured: KeyRepeat=2, InitialKeyRepeat=30) ──
+- name: Key repeat rate
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: KeyRepeat
+    type: int
+    value: 2
+
+- name: Initial repeat delay
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: InitialKeyRepeat
+    type: int
+    value: 30
+
+# ── Dock — applied on Dock restart (dock role, run after) ──
+- name: Dock — icon size
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: tilesize
+    type: int
+    value: 40
+
+- name: Dock — don't rearrange Spaces
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: mru-spaces
+    type: bool
+    value: false
+
+- name: Dock — hot corner bottom-right = Quick Note
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: wvous-br-corner
+    type: int
+    value: 14
+
+- name: Dock — hot corner bottom-right without modifier
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: wvous-br-modifier
+    type: int
+    value: 0
+# - name: macOS Tahoe performance workaround (autofill heuristic)
+#   community.general.osx_defaults:
+#     domain: NSGlobalDomain
+#     key: NSAutoFillHeuristicControllerEnabled
+#     type: bool
+#     value: false

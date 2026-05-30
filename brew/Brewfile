@@ -1,0 +1,123 @@
+# Brewfile — macOS packages (global)
+# Generated from ~/.config/nix/flake.nix on 2026-05-30, deduplicated + drift reintegrated.
+# Runtimes node/go/python/bun → managed by mise (not here). Rust → rustup.
+
+# ── Taps ──
+tap "derailed/k9s"
+tap "charmbracelet/tap"
+tap "dashlane/tap"
+
+# ── Toolchain managers ──
+brew "mise"                     # node/go/python/bun runtimes
+brew "rustup"                   # rust (run rustup-init after install)
+brew "dashlane-cli"             # dashlane/tap — secrets CLI (dcli)
+
+# ── CLI ──
+brew "awscli"
+brew "bat"
+brew "bottom"
+brew "btop"
+brew "ctop"
+brew "diff-so-fancy"
+brew "dive"
+brew "dprint"                   # formatter (used by claude-config)
+brew "eza"
+brew "ffmpeg"
+brew "fzf"
+brew "gh"
+brew "git"
+brew "git-quick-stats"
+brew "gitleaks"                 # secret scanning (pre-commit + CI)
+brew "glab"
+brew "glow"                     # charmbracelet/tap
+brew "gnupg"
+brew "gnu-sed"
+brew "htop"
+brew "iperf3"
+brew "jq"
+brew "just"                    # task runner (Justfile)
+brew "k9s"                      # derailed/k9s
+brew "kubectl"
+brew "lazydocker"
+brew "lazygit"
+brew "lefthook"                 # git hooks manager
+brew "lua-language-server"
+brew "neovim"
+brew "oh-my-posh"               # prompt (replaces starship)
+brew "rclone"
+brew "ripgrep"
+brew "rustscan"
+brew "sqlc"
+brew "stylua"
+brew "tmux"
+brew "tokei"
+brew "trivy"                    # drift: installed outside flake (security scanner)
+brew "upx"
+brew "yq"
+brew "zoxide"
+brew "zstd"
+
+# ── Build tooling / DB / misc (from flake brews) ──
+brew "asitop"
+brew "lld"
+brew "llvm"
+brew "lychee"
+brew "mactop"
+brew "makensis"
+brew "mas"
+brew "ollama"
+brew "pgbadger"
+brew "pgformatter"
+brew "pipx"
+brew "postgresql@18"           # actual version installed (flake said _14)
+brew "protobuf"
+brew "rtk"                      # Rust Token Killer (installed via brew, confirmed)
+brew "sqlite"
+brew "typos-cli"
+brew "wakeonlan"
+
+# ── To resolve — Nix→brew mapping, source to confirm (see wiki "deferred points") ──
+# air         → tap cosmtrek/air  OR  mise/go: `go install github.com/air-verse/air@latest`
+# templ       → mise/go: `go install github.com/a-h/templ/cmd/templ@latest`
+# tailwindcss            → check `brew "tailwindcss"` ; tailwindcss-language-server LSP via npm/mason
+
+# ── DROP — do not reintroduce ──
+# starship  → replaced by oh-my-posh (already active in .zshrc)
+# n         → replaced by mise
+# mkalias, nixpkgs-fmt → Nix-specific
+
+# ── Casks (GUI apps) ──
+# cask "bartender"                # not using for now
+cask "bruno"
+cask "cmux"                     # drift reintegrated
+cask "datagrip"
+cask "discord"
+cask "docker-desktop"
+# cask "drawio"
+cask "firefox@developer-edition"
+cask "google-chrome"
+# cask "inkscape"
+cask "istat-menus"
+cask "lm-studio"
+# cask "microsoft-auto-update"
+# cask "microsoft-teams"
+cask "mockoon"
+cask "nordvpn"
+cask "obsidian"
+cask "freelens"
+cask "raycast"
+cask "slack"
+cask "spotify"
+cask "tailscale-app"            # drift reintegrated
+cask "teamviewer"
+cask "thaw"                     # drift reintegrated
+cask "visual-studio-code"
+cask "zed"
+
+# ── Fonts ──
+cask "font-hack-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
+
+# ── Mac App Store ──
+mas "Spark Desktop", id: 6445813049
+# (dropped Spark 2.x, id 1176895641 — replaced by Spark Desktop)

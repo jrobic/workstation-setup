@@ -1,0 +1,54 @@
+# ~/.aliases — common aliases + per-machine specific (templated by chezmoi).
+# Sourced by ~/.zshrc.
+
+alias ls='eza --icons --group-directories-first'   # eza (formerly exa)
+alias ll='ls -l'
+alias la='ls -la'
+
+alias cat='bat'
+
+alias vim='nvim'
+alias c='clear'
+
+alias ..='cd ..'
+
+# Empty trash
+alias emptytrash='rm -rf ~/.Trash/*'
+
+# Local / public IP
+alias ip='ipconfig getifaddr en0'
+alias ipx='curl -s https://ipinfo.io/ip'
+
+# Show / hide desktop icons
+alias hidedesktop='defaults write com.apple.finder CreateDesktop -bool false; killall Finder'
+alias showdesktop='defaults write com.apple.finder CreateDesktop -bool true; killall Finder'
+
+# Recursively delete .DS_Store
+alias cleanup='find . -type f -name .DS_Store -ls -delete'
+
+# Wake the NAS (Wake-on-LAN)
+alias wakenas='wakeonlan 6c:1f:f7:8d:02:68'
+
+# Convert .mov → .webm
+function convert-video() {
+  ffmpeg -i $1 -c:v libvpx-vp9 -b:v 2M -c:a libvorbis $2
+}
+
+# Bulk rename: rename-files <from> <to>
+function rename-files() {
+  find . -type f -name "*$1*" | while read FILE; do
+    newfile=$(echo $FILE | sed -e "s/$1/$2/")
+    mv "$FILE" "$newfile"
+  done
+}
+
+# Kill process listening on a port: killport <port>
+function killport() {
+  lsof -i tcp:$1 | awk 'NR!=1 {print $2}' | xargs kill -9
+}
+
+{{ if ne .chezmoi.hostname "mini" -}}
+# ── Specific: reach / wake Mac mini (from other machines) ──
+alias work-mini='TS_IF=$(netstat -nr -f inet | grep "100\." | awk "{print \$NF}" | head -1) && sudo route delete 100.64.0.0/10 2>/dev/null; sudo route add 100.64.0.0/10 -interface $TS_IF && echo "Tailscale route via $TS_IF"'
+alias wake-mini="wakeonlan d0:11:e5:ed:8d:ca"
+{{ end -}}

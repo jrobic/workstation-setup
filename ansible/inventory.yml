@@ -1,0 +1,21 @@
+---
+# Workstation inventory.
+# Local run (bootstrap / just sync) targets `localhost` (darwin group).
+# Named hosts serve for future remote runs.
+all:
+  children:
+    darwin:
+      hosts:
+        localhost:
+          ansible_connection: local
+          ansible_python_interpreter: "{{ ansible_playbook_python }}"
+        # mbp:                      # MacBook Pro (work) — future remote
+        #   ansible_host: mbp.local
+        # mini:                     # Mac mini — planned
+        #   ansible_host: mini.local
+    linux:
+      hosts: {}
+      # pc-rtx:                     # Linux, RTX 5090 — STUB (future)
+      #   ansible_host: pc-rtx.local
+      # nas-vm:                     # dev VM on NAS — STUB (future)
+      #   ansible_host: nas-vm.local
