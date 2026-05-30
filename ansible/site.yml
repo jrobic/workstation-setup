@@ -5,20 +5,22 @@
 - name: Workstation — macOS
   hosts: darwin
   gather_facts: true
+  # Each role is tagged with its name → run one with: --tags <role>
+  # (e.g. ansible-playbook ... --limit localhost --tags dock -K)
   roles:
-    - role: bootstrap        # brew + prerequisite tools (gh, glab, mise)
-    - role: mise             # node/go/python/bun runtimes + dcli (npm)
-    - role: git-hosts        # per-machine SSH key + gh/glab upload
-    - role: gpg              # per-machine GPG signing key + gh/glab upload
-    - role: brew             # full brew bundle (Brewfile)
-    - role: chezmoi          # public dotfiles (init --apply)
-    - role: claude-config    # clone private repo → ~/.claude (Design B)
-    - role: macos-defaults   # defaults write
-    - role: dock             # dockutil
+    - { role: bootstrap,     tags: [bootstrap] }      # brew + prerequisite tools (gh, glab, mise)
+    - { role: mise,          tags: [mise] }           # node/go/python/bun runtimes
+    - { role: git-hosts,     tags: [git-hosts] }      # per-machine SSH key + gh/glab upload
+    - { role: gpg,           tags: [gpg] }            # per-machine GPG signing key + gh/glab upload
+    - { role: brew,          tags: [brew] }           # full brew bundle (Brewfile) + MAS
+    - { role: chezmoi,       tags: [chezmoi] }        # public dotfiles (init --apply)
+    - { role: claude-config, tags: [claude-config] }  # clone private repo → ~/.claude (Design B)
+    - { role: macos-defaults, tags: [macos-defaults] } # defaults write
+    - { role: dock,          tags: [dock] }           # dockutil
 
 # Linux — STUB, activated when pc-rtx/nas-vm arrive.
 - name: Workstation — Linux
   hosts: linux
   gather_facts: true
   roles:
-    - role: linux-pkg
+    - { role: linux-pkg, tags: [linux-pkg] }
