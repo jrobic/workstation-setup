@@ -5,3 +5,6 @@
 
 # Serena MCP local state
 .serena/
+
+# Editor / tool logs
+nvim.log
