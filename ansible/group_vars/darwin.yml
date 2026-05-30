@@ -21,6 +21,6 @@ mas_apps:
 dock_persistent_apps:
   - "/Applications/Spark Desktop.app"
   - "/Applications/Obsidian.app"
-  - "/Applications/Firefox Developer Edition.app"
-  - "/Applications/Visual Studio Code.app"
   - "/Applications/DataGrip.app"
+  - "/Applications/Zed.app"
+  - "/Applications/cmux.app"
