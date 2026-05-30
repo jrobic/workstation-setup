@@ -48,30 +48,39 @@
   args:
     creates: "{{ ansible_facts.user_dir }}/.gnupg/pub_signing.asc"
 
-# ── GitHub: gh gpg-key add ──
-- name: List GitHub GPG keys (idempotence)
-  ansible.builtin.command: gh gpg-key list
+- name: Read a stable base64 line of the public key (for fingerprint-based idempotence)
+  ansible.builtin.shell: >
+    grep -E '^[A-Za-z0-9+/]{60,}=*$' {{ ansible_facts.user_dir }}/.gnupg/pub_signing.asc | sed -n '1p'
+  register: gpg_pub_line
   changed_when: false
-  failed_when: false
-  register: gh_gpg
 
-- name: Upload GPG key to GitHub
+# ── GitHub (needs gh scope write:gpg_key) ──
+- name: List registered GitHub GPG keys (full armored key via API)
+  ansible.builtin.command: gh api /user/gpg_keys
+  changed_when: false
+  register: gh_gpg
+  retries: 3
+  delay: 3
+  until: gh_gpg.rc == 0      # transient 5xx retried; missing write:gpg_key scope halts here (clear)
+
+- name: Upload GPG key to GitHub (only if this key is not already registered)
   ansible.builtin.command: "gh gpg-key add {{ ansible_facts.user_dir }}/.gnupg/pub_signing.asc"
-  when: (gpg_fpr.stdout | default('XXXX'))[8:16] not in (gh_gpg.stdout | default(''))
+  when: gpg_pub_line.stdout not in (gh_gpg.stdout | default(''))
 
 # ── GitLab: no gpg-key subcommand → REST API ──
-- name: List GitLab GPG keys (idempotence)
+- name: List registered GitLab GPG keys (full armored key via API)
   ansible.builtin.command: glab api /user/gpg_keys
   changed_when: false
-  failed_when: false
   register: gl_gpg
+  retries: 3
+  delay: 3
+  until: gl_gpg.rc == 0      # tolerate transient API 5xx; required (no blind upload)
 
-- name: Upload GPG key to GitLab via API
+- name: Upload GPG key to GitLab via API (only if not already registered)
   ansible.builtin.shell: >
     set -o pipefail;
     glab api --method POST /user/gpg_keys
     --field key="$(cat {{ ansible_facts.user_dir }}/.gnupg/pub_signing.asc)"
   args:
     executable: /bin/bash
-  when: (gpg_fpr.stdout | default('')) not in (gl_gpg.stdout | default(''))
-  # To validate on first run: multi-line encoding of --field key (else --raw-field / @file).
+  when: gpg_pub_line.stdout not in (gl_gpg.stdout | default(''))

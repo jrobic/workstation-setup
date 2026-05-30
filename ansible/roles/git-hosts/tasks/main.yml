@@ -14,6 +14,11 @@
   # Only generates when missing — never reads/touches an existing (possibly
   # passphrase-protected) key. Avoids openssh_keypair's "unable to read key" failure.
 
+- name: Read local public key material (base64 blob, for fingerprint-based idempotence)
+  ansible.builtin.shell: "awk '{print $2}' {{ ssh_key_path }}.pub"
+  register: ssh_pub_material
+  changed_when: false
+
 # ── GitHub (gh) — OAuth device flow, no PAT ──
 - name: Check GitHub authentication
   ansible.builtin.command: gh auth status
@@ -29,15 +34,18 @@
       (choose SSH, device flow). Press Enter once done.
   when: gh_auth.rc != 0
 
-- name: List GitHub SSH keys (idempotence)
-  ansible.builtin.command: gh ssh-key list
+- name: List registered GitHub SSH keys (full material via API)
+  ansible.builtin.command: gh api --paginate /user/keys
   changed_when: false
   register: gh_keys
+  retries: 3
+  delay: 3
+  until: gh_keys.rc == 0      # tolerate transient GitHub 5xx
 
-- name: Upload pubkey to GitHub
+- name: Upload pubkey to GitHub (only if this key is not already registered)
   ansible.builtin.command: >
     gh ssh-key add {{ ssh_key_path }}.pub --title "{{ ssh_key_title }}" --type authentication
-  when: ssh_key_title not in (gh_keys.stdout | default(''))
+  when: ssh_pub_material.stdout not in (gh_keys.stdout | default(''))
 
 # ── GitLab (glab) — PAT required (api + write_repository), from Dashlane ──
 - name: Check GitLab authentication
@@ -56,13 +64,15 @@
   when: glab_auth.rc != 0
   # NB: confirm exact syntax `dcli password <item>` (raw password output).
 
-- name: List GitLab SSH keys (idempotence)
-  ansible.builtin.command: glab ssh-key list
+- name: List registered GitLab SSH keys (full material via API)
+  ansible.builtin.command: glab api /user/keys
   changed_when: false
-  failed_when: false
   register: glab_keys
+  retries: 3
+  delay: 3
+  until: glab_keys.rc == 0    # tolerate transient API 5xx; required (no blind upload)
 
-- name: Upload pubkey to GitLab
+- name: Upload pubkey to GitLab (only if this key is not already registered)
   ansible.builtin.command: >
     glab ssh-key add {{ ssh_key_path }}.pub --title "{{ ssh_key_title }}" --usage-type auth_and_signing
-  when: ssh_key_title not in (glab_keys.stdout | default(''))
+  when: ssh_pub_material.stdout not in (glab_keys.stdout | default(''))
