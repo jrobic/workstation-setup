@@ -5,3 +5,7 @@ README.md
 # Runtime / state never to be managed on the target side (reminder; especially relevant
 # if adding ~/.config/* in bulk via the allowlist).
 .zsh_history
+
+# Owned by the ansible gpg role (per-machine signingkey), NOT chezmoi.
+# ~/.gitconfig includes it; git silently ignores it when absent.
+.gitconfig.local
