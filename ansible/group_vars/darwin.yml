@@ -11,6 +11,12 @@ mise_global_tools:
   - { name: "python", version: "latest" }
   - { name: "bun", version: "latest" }
 
+# Mac App Store apps — installed via community.general.mas (idempotent: checks
+# `mas list`, skips if present). Kept OUT of the Brewfile because brew bundle's mas
+# fails non-interactively. Requires being signed into the App Store on a fresh machine.
+mas_apps:
+  - { name: "Spark Desktop", id: 6445813049 }
+
 # Dock (dockutil) — persistent apps.
 dock_persistent_apps:
   - "/Applications/Spark Desktop.app"

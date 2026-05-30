@@ -120,5 +120,6 @@ cask "font-hack-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
 
 # ── Mac App Store ──
-mas "Spark Desktop", id: 6445813049
-# (dropped Spark 2.x, id 1176895641 — replaced by Spark Desktop)
+# Handled by the ansible `brew` role via community.general.mas (idempotent), NOT here:
+# brew bundle runs `mas install` blindly and fails non-interactively (sudo/terminal).
+# MAS apps live in ansible/group_vars/darwin.yml → mas_apps.

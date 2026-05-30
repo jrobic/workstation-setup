@@ -16,3 +16,13 @@
   when: brewfile_host_stat.stat.exists
   register: brew_bundle_host
   changed_when: "'Installing' in brew_bundle_host.stdout"
+
+# Mac App Store — separate from brew bundle (Geerling-style). The mas module checks
+# `mas list` and skips if installed → no blind `mas install` / sudo-terminal failure.
+- name: Install Mac App Store apps
+  community.general.mas:
+    id: "{{ item.id }}"
+    state: present
+  loop: "{{ mas_apps | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"
