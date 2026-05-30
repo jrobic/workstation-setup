@@ -8,3 +8,17 @@
   loop: "{{ mise_global_tools }}"
   register: mise_use
   changed_when: "'installing' in (mise_use.stderr | default(''))"
+
+# Expose mise shims in /usr/local/bin so non-interactive /bin/sh hooks (Claude Code
+# SessionStart, etc.) resolve node/bun. /bin/sh doesn't read .zshenv, but
+# /usr/local/bin is on its default PATH. Symlinks point at the shims (not a pinned
+# version) → they follow mise upgrades automatically. mise-only, no parallel install.
+- name: Symlink mise shims into /usr/local/bin for /bin/sh hooks
+  ansible.builtin.file:
+    src: "{{ ansible_facts.user_dir }}/.local/share/mise/shims/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+    force: true
+  loop:
+    - node
+    - bun
